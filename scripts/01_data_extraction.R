@@ -50,3 +50,12 @@ all_data |>
   complete(date = seq.Date(min(date), max(date), by = "month")) |>
   filter(is.na(rate)) |>
   select(zone, outcome, date)
+
+all_data |>
+  filter(outcome == "any_opioid") |>
+  ggplot(aes(date, rate, color = zone)) +
+  geom_line() +
+  geom_vline(xintercept = as.Date(c("2017-10-01","2018-03-01")),
+             linetype = "dashed", color = "gray40") +
+  labs(title = "Opioid poisoning death rate by zone",
+       subtitle = "Dashed lines: Calgary (Oct 2017) and Edmonton (Mar 2018) SCS openings")

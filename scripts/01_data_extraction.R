@@ -33,3 +33,20 @@ read_one <- function(zone, outcome, path) {
 all_data <- pmap_dfr(file_map, read_one) |>
   arrange(zone, outcome, date)
 
+all_data |>
+  group_by(zone, outcome) |>
+  summarise(
+    n = n(), 
+    min_date = min(date), 
+    max_date = max(date), 
+    .groups = "drop")
+
+all_data |>
+  count(zone, outcome, date) |>
+  filter(n > 1)
+
+all_data |>
+  group_by(zone, outcome) |>
+  complete(date = seq.Date(min(date), max(date), by = "month")) |>
+  filter(is.na(rate)) |>
+  select(zone, outcome, date)

@@ -1,4 +1,5 @@
 library(tidyverse)
+library(lubridate)
 
 month_lookup <- c("0"="Apr","1"="Aug","2"="Dec","3"="Feb","4"="Jan","5"="Jul",
                   "6"="Jun","7"="Mar","8"="May","9"="Nov","10"="Oct","11"="Sep")
@@ -24,7 +25,7 @@ read_one <- function(zone, outcome, path) {
       outcome    = outcome,
       month      = month_lookup[as.character(month_code)],
       month_num  = match(month, month.abb),
-      date       = as.Date(paste(year, month_num, "01", sep = "-")),
+      date       = make_date(year, month_num),
       year       = as.integer(year)
     ) |>
     select(zone, outcome, date, year, month, rate)
@@ -59,3 +60,5 @@ all_data |>
              linetype = "dashed", color = "gray40") +
   labs(title = "Opioid poisoning death rate by zone",
        subtitle = "Dashed lines: Calgary (Oct 2017) and Edmonton (Mar 2018) SCS openings")
+
+saveRDS(all_data, "data/processed/all_data.rds")

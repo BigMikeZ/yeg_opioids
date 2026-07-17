@@ -185,3 +185,7 @@ qqnorm(residuals(edmonton_final, type = "normalized")); qqline(residuals(edmonto
 # Save cleaned opioid data
 saveRDS(edmonton_opioid_data, 'data/processed/edmonton_opioid.rds')
 saveRDS(calgary_opioid_data, 'data/processed/calgary_opioid.rds')
+
+# Save final models
+saveRDS(edmonton_final, 'models/edmonton_opioid_final.rds')
+saveRDS(calgary_final, 'models/calgary_opioid_final.rds')

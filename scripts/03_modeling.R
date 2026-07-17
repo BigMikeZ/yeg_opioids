@@ -27,9 +27,9 @@ calgary_opioid_data <- opioid_data |>
 
 # build pre models
 edmonton_pre <- edmonton_opioid_data |> 
-  filter(intervention == 0) 
+  filter(date < ymd("2018-03-01")) 
 calgary_pre <- calgary_opioid_data |> 
-  filter(intervention == 0) 
+  filter(date < ymd("2017-10-01")) 
 
 pre_calgary  <- gls(rate ~ time * zone, data = calgary_pre,
                     correlation = corAR1(form = ~ time | zone), method = "REML")
@@ -181,3 +181,7 @@ summary(edmonton_final)
 
 qqnorm(residuals(calgary_final, type = "normalized")); qqline(residuals(calgary_final, type = "normalized"))
 qqnorm(residuals(edmonton_final, type = "normalized")); qqline(residuals(edmonton_final, type = "normalized"))
+
+# Save cleaned opioid data
+saveRDS(edmonton_opioid_data, 'data/processed/edmonton_opioid.rds')
+saveRDS(calgary_opioid_data, 'data/processed/calgary_opioid.rds')

@@ -228,9 +228,9 @@ summary(edmonton_any_model)
 summary(calgary_any_model)
 
 # Save any-substance data and models
-saveRDS(edmonton_any, "edmonton_any.rds")
-saveRDS(calgary_any, "calgary_any.rds")
+saveRDS(edmonton_any, "data/processed/edmonton_any.rds")
+saveRDS(calgary_any, "data/processed/calgary_any.rds")
 
-saveRDS(edmonton_any_model, "edmonton_any_final.rds")
-saveRDS(calgary_any_model, "calgary_any_model.rds")
+saveRDS(edmonton_any_model, "models/edmonton_any_final.rds")
+saveRDS(calgary_any_model, "models/calgary_any_model.rds")
 

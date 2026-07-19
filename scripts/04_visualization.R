@@ -5,8 +5,14 @@ library(nlme)
 edmonton_opioid_data <- read_rds("data/processed/edmonton_opioid.rds")
 calgary_opioid_data <- read_rds("data/processed/calgary_opioid.rds")
 
+edmonton_any <- read_rds("data/processed/edmonton_any.rds")
+calgary_any <- read_rds("data/processed/calgary_any.rds")
+
 edmonton_opioid_final <- read_rds("models/edmonton_opioid_final.rds")
 calgary_opioid_final <- read_rds("models/calgary_opioid_final.rds")
+
+edmonton_any_final <- read_rds("models/edmonton_any_final.rds")
+calgary_any_final <- read_rds("models/calgary_any_final.rds")
 
 # Build data for visualization
 edmonton_plot_data <- edmonton_opioid_data |> 
@@ -65,6 +71,26 @@ ggplot() +
     title = "Calgary: observed opioid death rate vs. model-fitted and counterfactual trajectories",
     subtitle = "Solid amber = SCS opening (Oct 2017)  |  Dotted = COVID onset (Mar 2020)\nBlue = fitted (actual model)  |  Gray dashed = counterfactual (no SCS effect)",
     x = "Date", y = "Rate per 100,000 person-years"
+  ) +
+  theme_minimal()
+
+# Visualize any substance data & models
+edmonton_any$fitted_any <- fitted(edmonton_any_final)
+edmonton_any_plot_data <- edmonton_any |> filter(zone == "Edmonton")
+
+ggplot() +
+  geom_point(data = edmonton_plot_data, aes(date, rate), alpha = 0.25, color = "gray40") +
+  geom_line(data = edmonton_plot_data, aes(date, fitted), color = "#2a78d6", linewidth = 1) +
+  geom_line(data = edmonton_counter_factual, aes(date, counter_factual_fit),
+            color = "#888780", linewidth = 1, linetype = "dashed") +
+  geom_line(data = edmonton_any_plot_data, aes(date, fitted_any),
+            color = "#c0392b", linewidth = 0.8, linetype = "dotted") +
+  geom_vline(xintercept = as.Date("2018-03-01"), color = "#eda100", linewidth = 0.8) +
+  geom_vline(xintercept = as.Date("2020-03-01"), linetype = "dotted", color = "gray50") +
+  labs(
+    title = "Edmonton: opioid vs. all-substance fitted trajectories",
+    subtitle = "Blue = opioid fitted | Red dotted = all-substance fitted | Gray dashed = opioid counterfactual",
+    y = "Rate per 100,000 person-years"
   ) +
   theme_minimal()
 

@@ -189,3 +189,48 @@ saveRDS(calgary_opioid_data, 'data/processed/calgary_opioid.rds')
 # Save final models
 saveRDS(edmonton_final, 'models/edmonton_opioid_final.rds')
 saveRDS(calgary_final, 'models/calgary_opioid_final.rds')
+
+# Re-run models on any substance data
+any_data <- all_data_clean |> 
+  filter(outcome == "any_substance") |> 
+  mutate(zone = factor(zone)) |> 
+  group_by(zone) |> 
+  mutate(
+    intervention = if_else((date >= ymd("2017-10-01") & zone == "Calgary") | (date >= ymd("2018-03-01") & zone == "Edmonton"), 1, 0),
+    covid = if_else(date >= ymd("2020-03-01"), 1, 0), 
+    time = (min(date) %--% date) / months(1) + 1,
+    covid = if_else(date >= as.Date("2020-03-01"), 1, 0),
+    zone = fct_relevel(zone, "Central")
+  ) |> 
+  mutate(
+    time_after = case_when(
+      intervention == 1 & zone == "Calgary"   ~  (ymd("2017-10-01") %--% date) / months(1) + 1,
+      intervention == 1 & zone == "Edmonton"  ~  (ymd("2018-03-01") %--% date) / months(1) + 1,
+      .default = 0
+    ),
+    covid_time = if_else(covid == 1, (ymd("2020-03-01") %--% date) / months(1) + 1, 0)
+  ) |> 
+  ungroup() 
+
+edmonton_any <- any_data |> 
+  filter(zone != "Calgary")
+calgary_any <- any_data |> 
+  filter(zone != "Edmonton")
+
+edmonton_any_model <- gls(rate ~ time + zone + intervention + time_after + covid + covid_time,
+                          data = edmonton_any,
+                          correlation = corAR1(form = ~time | zone), method = "REML")
+calgary_any_model <- gls(rate ~ time + zone + intervention + time_after + covid + covid_time,
+                         data = calgary_any,
+                         correlation = corAR1(form = ~time | zone), method = "REML")
+
+summary(edmonton_any_model)
+summary(calgary_any_model)
+
+# Save any-substance data and models
+saveRDS(edmonton_any, "edmonton_any.rds")
+saveRDS(calgary_any, "calgary_any.rds")
+
+saveRDS(edmonton_any_model, "edmonton_any_final.rds")
+saveRDS(calgary_any_model, "calgary_any_model.rds")
+

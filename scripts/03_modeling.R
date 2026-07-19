@@ -232,5 +232,5 @@ saveRDS(edmonton_any, "data/processed/edmonton_any.rds")
 saveRDS(calgary_any, "data/processed/calgary_any.rds")
 
 saveRDS(edmonton_any_model, "models/edmonton_any_final.rds")
-saveRDS(calgary_any_model, "models/calgary_any_model.rds")
+saveRDS(calgary_any_model, "models/calgary_any_final.rds")
 

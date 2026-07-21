@@ -1,0 +1,51 @@
+---
+title: "yeg_opioid_report"
+author: "Mike Zhang"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    nunmber-sections: true
+    theme: cosmo
+    embed-resources: true
+    output-file: index.html
+    output-dir: "/docs"
+execute:
+  echo: false
+  warning: false
+  message: fakse
+---
+
+```{r}
+#| label: set-up
+
+library(tidyverse)
+library(lubridate)
+
+edmonton_opioid <- readRDS("data/processed/edmonton_opioid.rds")
+calgary_opioid<- readRDS("data/processed/calgary_opioid.rds")
+edmonton_any <- readRDS("data/processed/edmonton_any.rds") 
+calgary_any<- readRDS("data/processed/calgary_any.rds")
+
+edmonton_opioid_final <- readRDS("models/edmonton_opioid_final.rds")
+calgary_opioid_final <- readRDS("models/calgary_opioid_final.rds")
+edmonton_any_final <- readRDS("models/edmonton_any_final.rds")
+calgary_any_final <- readRDS("models/calgary_any_final.rds")
+
+edmonton_opioid 
+
+```
+
+# Introduction
+
+The implementation of supervised consumption sites (SCS) has been a contentious and heavily politicized public health topic in Alberta over the past few years. With the Alberta government having already closed some SCSs within the province and planning further closures in the near future, this project examines the association between SCS implementation and drug-related death rates in two major Alberta cities, Edmonton and Calgary, using segmented linear regression on time series data of opioid and all-substance death rates per 100,000 population. All data were scraped from the Alberta Substance Use Surveillance System and span January 2016 to March 2026. The main findings complicate a simple narrative because no statistically significant effect of SCS implementation was found in Calgary, for either opioid or all-substance death rates. In Edmonton, however, both opioid and all-substance death rates rose significantly faster following SCS implementation relative to control zones, and the near-identical effect across both outcomes suggests this reflects factors specific to Edmonton during this period rather than a mechanism attributable to SCS itself.
+
+# Background
+
+Supervised consumption sites (SCS) are health facilities where individuals can use pre-obtained drugs under the observation of trained staff, who can intervene with oxygen or naloxone if an overdose occurs. Naloxone specifically reverses opioid overdoses by blocking opioid receptors. It has no equivalent mechanism for cocaine, methamphetamine, alcohol, or most other substances. This mechanism matters for interpreting this project's findings, discussed further below.
+
+Alberta's first SCS opened at Calgary's Sheldon M. Chumir Health Centre in October 2017, followed shortly after by sites in Edmonton (Boyle Street Community Services in March 2018, George Spady Centre in April 2018, and Boyle McCauley Health Centre in November 2018) and the Royal Alexandra Hospital's in-patient program. Over the following two years, sites also opened in several other Alberta cities: Lethbridge's ARCHES site opened February 28, 2018 (closed by the provincial government in 2020, later replaced by a separate site at the Lethbridge Shelter), Red Deer opened a site around September 2018 (closed March 2025), and Grande Prairie's mobile site opened March 11, 2019 and remains in operation. Lethbridge, Red Deer, and Grande Prairie fall within Alberta's South, Central, and North health zones respectively — the same three zones used as comparison groups in this analysis, a point revisted in the Methods section.
+
+SCS implementation has remained politically contentious in Alberta since these initial openings, with debate centered around concerns about crime, social disorder, and needle debris in surrounding neighbourhoods, weighed against harm-reduction outcomes such as overdose reversals and reduced disease transmission. Under the current provincial government, policy has shifted decisively toward a "recovery-oriented" model emphasizing treatment and detox services over harm reduction. This shift has translated into concrete closures: the Royal Alexandra Hospital site in Edmonton closed in December 2025, and in March 2026 the government announced the closure of the Calgary Chumir site and the Lethbridge site, both effective June 30, 2026 — leaving only two sites in Edmonton and the Grande Prairie mobile site remaining in the province. The government has cited a report from the Canadian Centre of Recovery Excellence, a Crown corporation it funds, showing no increase in mortality following the Red Deer site's 2025 closure; critics have challenged both the report's independence and its conclusions, and some have pointed to rising drug poisoning deaths in Lethbridge following the 2020 closure of the ARCHES site as evidence of harm.
+
+The broader evidence base on SCS effectiveness is itself mixed. International research, most notably on Vancouver's Insite facility, has generally reported reductions in overdose mortality and safer injection practices in surrounding areas. Evidence specific to Alberta and other Canadian jurisdictions is comparatively limited and contested, with government-commissioned reviews and independent research sometimes reaching different conclusions. Given the scale of the closures currently underway and the province's stated intention to move away from this model entirely, a locally-scoped, methodologically rigorous evaluation of SCS impact in Alberta's two largest cities is timely.

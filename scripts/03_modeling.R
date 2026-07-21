@@ -227,10 +227,46 @@ calgary_any_model <- gls(rate ~ time + zone + intervention + time_after + covid 
 summary(edmonton_any_model)
 summary(calgary_any_model)
 
-# Save any-substance data and models
+# Build single-site models
+edmonton_only_opioid <- edmonton_opioid |> 
+  filter(zone == "Edmonton")
+calgary_only_opioid <- calgary_opioid |> 
+  filter(zone == "Calgary")
+
+edmonton_only_opioid_final <- gls(rate ~ time + intervention + time_after + covid + covid_time,
+                                  data = edmonton_only_opioid,
+                                  correlation = corAR1(form = ~ time), method = "REML")
+calgary_only_opioid_final <- gls(rate ~ time + intervention + time_after + covid + covid_time,
+                                 data = calgary_only_opioid,
+                                 correlation = corAR1(form = ~ time), method = "REML")
+summary(edmonton_only_opioid_final)
+summary(calgary_only_opioid_final)
+
+# Run south-excluded modles
+calgary_data_noSouth  <- calgary_opioid  |> 
+  filter(zone != "South")
+edmonton_data_noSouth <- edmonton_opioid |> 
+  filter(zone != "South")
+
+calgary_noSouth_final <- gls(rate ~ time + zone + intervention + time_after + covid + covid_time,
+                             data = calgary_data_noSouth,
+                             correlation = corAR1(form = ~ time | zone), method = "REML")
+edmonton_noSouth_final <- gls(rate ~ time + zone + intervention + time_after + covid + covid_time,
+                              data = edmonton_data_noSouth,
+                              correlation = corAR1(form = ~ time | zone), method = "REML")
+
+summary(calgary_noSouth_final)
+summary(edmonton_noSouth_final)
+
+# Save data and models
 saveRDS(edmonton_any, "data/processed/edmonton_any.rds")
 saveRDS(calgary_any, "data/processed/calgary_any.rds")
 
 saveRDS(edmonton_any_model, "models/edmonton_any_final.rds")
 saveRDS(calgary_any_model, "models/calgary_any_final.rds")
 
+saveRDS(edmonton_only_opioid_final, "models/edmonton_only_opioid_final.rds")
+saveRDS(calgary_only_opioid_final, "models/calgary_only_opioid_final.rds")
+
+saveRDS(edmonton_noSouth_final, "models/edmonton_noSouth.rds")
+saveRDS(calgary_noSouth_final, "models/calgary_noSouth.rds")

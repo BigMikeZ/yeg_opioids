@@ -62,7 +62,7 @@ Controlled interrupted time series (ITS) was selected for this project as it fit
 
 ## Model Specification
 
-The final segmented regression formula is `rate ~ time + zone + intervention + time_after + covid + covid_time` where `rate` represents drug-related death rates per 100,000 person-years, `time` represents months passed since the earliest date of the data, `zone` represents AHS zones, a binary `intervention` variable indicates whether SCS was in effect or not, `time_after` serves as months passed since the intervention dates (0 before the intervention, and for control zones throughout), another binary `covid` variable indicates whether COVID-19's lockdown, arbitrarily set to March 1st 2020, has happened, and `covid_time` represents months elapsed since COVID-19. 
+The final segmented regression formula is `rate ~ time + zone + intervention + time_after + covid + covid_time` where `rate` represents drug-related death rates per 100,000 person-years, `time` represents months passed since the earliest date of the data, `zone` represents AHS zones, a binary `intervention` variable indicates whether SCS was in effect or not, `time_after` serves as months passed since the intervention dates (0 before the intervention, and for control zones throughout), another binary `covid` variable indicates whether COVID-19's lockdown, arbitrarily set to March 1st 2020, has happened, and `covid_time` represents months elapsed since COVID-19.
 
 COVID-19 was modeled with both a level shift (`covid`) and a slope change (`covid_time`) rather than a level shift alone. This decision followed a specific diagnostic sequence where a formal linearity check (adding a quadratic term to `time_after` and testing it via likelihood ratio test) found significant curvature in the post-intervention segment for both Edmonton and Calgary. Visual inspection suggested this curvature coincided with the onset of COVID-19 rather than reflecting a genuine nonlinear SCS effect. To test this, `covid_time` was added to allow COVID-19 its own slope, separate from `time_after`. This resolved the issue since once `covid_time` was included, the quadratic term was no longer statistically significant, confirming that the apparent curvature was attributable to COVID-19's distinct trajectory rather than non-linearity in the SCS effect itself.
 
@@ -71,3 +71,29 @@ COVID-19 was modeled with both a level shift (`covid`) and a slope change (`covi
 To be able to run segmented linear regression models, autocorrelation among data points at different dates needed to be corrected. An Ordinary Least Squares model without correction would distort the standard errors of parameter coefficients, leading to unreliable significance tests, even though the coefficient estimates themselves would remain unbiased. Generalized Least Squares (GLS) models were utilized over other alternatives, such as Prais-Winsten and Newey-West/HAC, because the data had a panel structure with multiple zones where zone-specific correction was needed. GLS was also favored over Generalized Estimating Equations (GEE), a comparable panel-data alternative, because GLS's likelihood-based framework allowed the autocorrelation correction to be formally tested against a plain OLS model rather than simply assumed. The argument `method = "ML"` was included in `gls()` to fit AR(1)-corrected GLS models on a scale comparable to OLS models, and the two were compared using `anova()`, which returned statistically significant results for both treatment zones, justifying the AR(1) correction. All final models were run with `method = "REML"` for reporting.
 
 ## Assumption Checks
+
+### Parallel Pre-trends
+
+GLS models incorporating AR(1) correction using the formula `rate ~ time * zone` were run on each zone's pre-intervention period, bounded by that treated zone's own intervention date (`2017-10-01` for Calgary zone and `2018-03-01` for Edmonton zone). The results showed non-significant interaction terms for both Calgary and Edmonton against all three comparison zones, supporting the parallel pre-trends assumption.
+
+### Linearity
+
+Linearity was assessed both within the post-intervention segment specifically (via a quadratic term on time_after), and across the overall shared time trend (via a quadratic term on time), each tested against the baseline AR(1) model via likelihood ratio test. The post-intervention segment showed no significant curvature for either zone (Calgary: p = 0.256; Edmonton: p = 0.159), supporting a linear specification for the SCS effect itself. The overall trend, however, showed significant curvature for both zones (Calgary: p = 0.0003; Edmonton: p = 0.0002). This was investigated further and attributed to COVID-19's distinct trajectory rather than non-linearity in the SCS effect; see Model Specification for the resolution.
+
+### Residual Diagnosis
+
+QQ plots showed right-skewed residuals in the primary models, likely driven by small monthly death counts in low-population zones. Log-transforming the outcome variable was attempted to address this, but it introduced skewness in the opposite direction, traced to zone-months with a death rate of zero (e.g., South and North zones in several months), and additionally broke the parallel pre-trends assumption for the South zone specifically. Given these issues, the raw-scale model was retained as the primary specification, with the log-transformed model kept only as a secondary robustness check (see Sensitivity and Specificity Analyses). The residual skew in the primary model remains a disclosed limitation, likely reflecting the inherent instability of rate estimates built on small monthly death counts in lower-population zones.
+
+## Sensitivity and Specificity Analyses
+
+### Specificity Check
+
+A specificity check was conducted by swapping the original outcome variable (any opioid death rates) for any-substance death rates. This tested mechanistic specificity to opioids, given SCS's naloxone-based mechanism, which has no plausible pathway to affect non-opioid deaths. Results were nearly identical to the baseline AR(1) models, particularly for Edmonton, suggesting a zone-wide confound rather than an SCS-specific effect.
+
+### Sensitivity Analysis
+
+Two sensitivity analyses were conducted. The first excluded the South zone from the comparison group, given that Lethbridge (South zone) opened its own SCS within weeks of Edmonton's, making South a compromised control. The second fit uncontrolled single-zone models with no comparison zones at all. Both single-zone models showed no statistically significant SCS effect. Under South-exclusion, Calgary's `time_after` coefficient flipped sign and became statistically significant; however, given the number of specifications tested across this analysis, this result should be interpreted with caution due to the risk of inflated Type I error from multiple comparisons. Both sensitivity analyses were conducted after the primary model was finalized, to avoid the appearance of post-hoc specification searching.
+
+## Software
+
+All analyses and visualizations were performed on R version 4.6.1. Packages utilized include `tidyverse` for general data manipulation and visualization (`ggplot2`), `lubridate` for date variables, and `nlme` for GLS modeling.

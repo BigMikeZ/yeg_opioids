@@ -100,8 +100,18 @@ edmonton_quad <- gls(rate ~ time + time_sq + zone + intervention + time_after + 
                      data = edmonton_opioid_data,
                      correlation = corAR1(form = ~ time | zone), method = "ML")
 
+calgary_quad_after  <- gls(rate ~ time + zone + intervention + time_after + time_after_sq + covid,
+                     data = calgary_opioid_data,
+                     correlation = corAR1(form = ~ time | zone), method = "ML")
+edmonton_quad_after <- gls(rate ~ time + zone + intervention + time_after + time_after_sq + covid,
+                     data = edmonton_opioid_data,
+                     correlation = corAR1(form = ~ time | zone), method = "ML")
+
 anova(calgary_ar1, calgary_quad)    
 anova(edmonton_ar1, edmonton_quad)  
+
+anova(calgary_ar1, calgary_quad_after)    
+anova(edmonton_ar1, edmonton_quad_after)  
 
 # residual plot
 calgary_opioid_data |> 

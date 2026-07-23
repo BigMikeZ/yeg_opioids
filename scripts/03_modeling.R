@@ -238,9 +238,9 @@ summary(edmonton_any_model)
 summary(calgary_any_model)
 
 # Build single-site models
-edmonton_only_opioid <- edmonton_opioid |> 
+edmonton_only_opioid <- edmonton_opioid_data |> 
   filter(zone == "Edmonton")
-calgary_only_opioid <- calgary_opioid |> 
+calgary_only_opioid <- calgary_opioid_data |> 
   filter(zone == "Calgary")
 
 edmonton_only_opioid_final <- gls(rate ~ time + intervention + time_after + covid + covid_time,
@@ -253,9 +253,9 @@ summary(edmonton_only_opioid_final)
 summary(calgary_only_opioid_final)
 
 # Run south-excluded modles
-calgary_data_noSouth  <- calgary_opioid  |> 
+calgary_data_noSouth  <- calgary_opioid_data  |> 
   filter(zone != "South")
-edmonton_data_noSouth <- edmonton_opioid |> 
+edmonton_data_noSouth <- edmonton_opioid_data |> 
   filter(zone != "South")
 
 calgary_noSouth_final <- gls(rate ~ time + zone + intervention + time_after + covid + covid_time,

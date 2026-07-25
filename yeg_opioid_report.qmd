@@ -21,6 +21,7 @@ execute:
 
 library(tidyverse)
 library(lubridate)
+library(gtsummary)
 
 edmonton_opioid <- readRDS("data/processed/edmonton_opioid.rds")
 calgary_opioid<- readRDS("data/processed/calgary_opioid.rds")
@@ -31,8 +32,6 @@ edmonton_opioid_final <- readRDS("models/edmonton_opioid_final.rds")
 calgary_opioid_final <- readRDS("models/calgary_opioid_final.rds")
 edmonton_any_final <- readRDS("models/edmonton_any_final.rds")
 calgary_any_final <- readRDS("models/calgary_any_final.rds")
-
-edmonton_opioid 
 
 ```
 
@@ -97,3 +96,14 @@ Two sensitivity analyses were conducted. The first excluded the South zone from 
 ## Software
 
 All analyses and visualizations were performed on R version 4.6.1. Packages utilized include `tidyverse` for general data manipulation and visualization (`ggplot2`), `lubridate` for date variables, and `nlme` for GLS modeling.
+
+# Results
+
+```{r}
+install.packages("broom.mixed")
+#| label: tbl-1
+#| tbl-cap: ""
+
+tbl_regression(edmonton_opioid_final)
+
+```

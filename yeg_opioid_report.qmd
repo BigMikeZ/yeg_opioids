@@ -99,11 +99,54 @@ All analyses and visualizations were performed on R version 4.6.1. Packages util
 
 # Results
 
-```{r}
-install.packages("broom.mixed")
-#| label: tbl-1
-#| tbl-cap: ""
+## Primary Model Results
 
-tbl_regression(edmonton_opioid_final)
+```{r}
+#| label: tbl-1
+#| tbl-cap: "Segmented linear regression estimates for the effect of supervised consumption site (SCS) implementation on opioid-related death rates in Edmonton, with North, Central, and South zones as comparison groups (Central zone serves as the reference category)."
+
+library(broom.mixed)
+
+edmonton_opioid_final |> 
+  tbl_regression(
+    label = list(
+      time         ~  "Overall time passed",
+      zoneEdmonton ~  "Edmonton zone",
+      zoneNorth    ~  "North zone",
+      zoneSouth    ~  "South zone",
+      intervention ~  "Immediate change at SCS opening",
+      time_after   ~  "Time passed since intervention",
+      covid        ~  "COVID-19",
+      covid_time   ~  "Time passed since COVID-19"
+    )
+  ) |> 
+  modify_header(label ~ "**Variable**") |> 
+  as_gt()
 
 ```
+
+``` {r}
+#| label: tbl-2
+#| tbl-cap: "Segmented linear regression estimates for the effect of supervised consumption site (SCS) implementation on opioid-related death rates in Calgary, with North, Central, and South zones as comparison groups (Central zone serves as the reference category)."
+
+calgary_opioid_final |> 
+  tbl_regression(
+    label = list(
+      time         ~  "Overall time passed",
+      zoneCalgary  ~  "Calgary zone",
+      zoneNorth    ~  "North zone",
+      zoneSouth    ~  "South zone",
+      intervention ~  "Immediate change at SCS opening",
+      time_after   ~  "Time passed since intervention",
+      covid        ~  "COVID-19",
+      covid_time   ~  "Time passed since COVID-19"
+    )
+  ) |> 
+  modify_header(label ~ "**Variable**") 
+
+summary(calgary_opioid_final)
+```
+
+According to the primary model results, Calgary showed no statistically significant SCS effect on opioid death rates — neither the immediate level shift at SCS opening nor the change in trend afterward reached significance (p = 0.6 and p = 0.3, respectively). Edmonton, by contrast, showed a statistically significant increase in the trend following SCS implementation (p = 0.004), indicating opioid death rates rose faster than expected relative to comparison zones after the SCS opened, though the immediate level shift itself was not significant.
+
+COVID-19, modeled separately from the SCS effect, showed a significant positive immediate level shift in both zones (p < 0.001 for both), alongside a significant negative change in trend afterward (Edmonton: p = 0.019; Calgary: p = 0.026) — consistent with an initial spike in death rates at pandemic onset followed by a gradual moderation in the growth rate over time.

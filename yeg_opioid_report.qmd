@@ -145,7 +145,6 @@ calgary_opioid_final |>
   ) |> 
   modify_header(label ~ "**Variable**") 
 
-summary(calgary_opioid_final)
 ```
 
 According to the primary model results, Calgary showed no statistically significant SCS effect on opioid death rates — neither the immediate level shift at SCS opening nor the change in trend afterward reached significance (p = 0.6 and p = 0.3, respectively). Edmonton, by contrast, showed a statistically significant increase in the trend following SCS implementation (p = 0.004), indicating opioid death rates rose faster than expected relative to comparison zones after the SCS opened, though the immediate level shift itself was not significant.

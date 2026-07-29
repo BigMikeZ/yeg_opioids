@@ -391,3 +391,32 @@ Finally, this study cannot rule out reverse causality in SCS site placement. Sit
 ## Future directions
 
 A more definitive account of Edmonton's finding would require data this study did not tap into: site-level utilization and overdose reversal records, drug supply toxicity surveillance, and comparable data from other Canadian or international jurisdictions with SCS implementation to test whether similar broad-based mortality increases have been observed elsewhere in association with site openings. Incorporating Red Deer's site closure as an additional modeled break point, and extending the analysis to Alberta's other SCS cities, would also help determine whether the pattern observed in Edmonton is unique to that city or reflects a more general dynamic across Alberta's SCS roll-out.
+
+# Conclusion
+
+This study examined the association between supervised consumption site (SCS) implementation and drug-related death rates in Edmonton and Calgary using a controlled interrupted time series design, addressing a question of direct relevance to Alberta's ongoing SCS policy debate. Calgary showed no reliable evidence of an SCS effect on opioid or all-substance death rates in either direction, a result that held consistently across the primary model and specificity check. Edmonton showed a statistically significant increase in the post-intervention death rate trend that proved robust across most specifications tested, including a specificity check comparing opioid-specific and all-substance outcomes. That specificity check, however, found the effect nearly identical across both outcomes despite SCS having no plausible mechanism to influence non-opioid deaths. It means that the finding more likely reflects a broader confound specific to Edmonton during this period than a causal effect of the SCS itself.
+
+Taken together, these results do not support a simple narrative in either direction. They offer no evidence that Calgary's SCS reduced opioid deaths, but neither do they support the claim that Edmonton's SCS sites caused increased opioid mortality. The robust pattern observed in Edmonton remains real, but its cause is unresolved by this analysis. This underscores a broader point relevant to the current policy debate that single-outcome, city-level analyses of this kind can identify genuine patterns worth taking seriously, but establishing their cause requires evidence this study did not have access to, including site-level utilization data and drug supply surveillance. Given the scale of SCS closures currently underway in Alberta, decisions of this consequence warrant an evidence base considerably more comprehensive than what any single study, including this one, can provide.
+
+# Appendix
+
+```{r}
+#| label: fig-2
+#| fig-cap: "QQ plots of primary models"
+
+qqnorm(residuals(calgary_opioid_final, type = "normalized"))
+qqline(residuals(calgary_opioid_final, type = "normalized"))
+
+qqnorm(residuals(edmonton_opioid_final, type = "normalized"))
+qqline(residuals(edmonton_opioid_final, type = "normalized"))
+
+```
+
+```{r}
+#| label: fig-3
+#| fig-cap: "ACF plots of primary models"
+
+plot(ACF(calgary_opioid_final, resType = "normalized"), alpha = 0.05)
+plot(ACF(edmonton_opioid_final, resType = "normalized"), alpha = 0.05)
+
+```

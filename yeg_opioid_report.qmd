@@ -404,7 +404,7 @@ qqline(residuals(calgary_opioid_final, type = "normalized"))
 
 ```{r}
 #| label: fig-5
-#| fig-cap: "ACF plot of Calgary zone's primary models"
+#| fig-cap: "ACF plot of Calgary zone's primary model"
 
 plot(ACF(calgary_opioid_final, resType = "normalized"), alpha = 0.05)
 
@@ -412,7 +412,7 @@ plot(ACF(calgary_opioid_final, resType = "normalized"), alpha = 0.05)
 
 ```{r}
 #| label: fig-6
-#| fig-cap: "ACF plot of Edmonton zone's primary models"
+#| fig-cap: "ACF plot of Edmonton zone's primary model"
 
 plot(ACF(edmonton_opioid_final, resType = "normalized"), alpha = 0.05)
 

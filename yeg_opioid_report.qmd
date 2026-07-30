@@ -330,28 +330,6 @@ tbl_merge(
 ```
 
 
-```{r}
-#| label: tbl-5
-#| tbl-cap: "Comparison of the estimated trend change (`time_after`) between primary models (with comparison zones) and single-zone models"
-
-tbl_edmonton_only <- tbl_regression(
-  edmonton_only_opioid_final, 
-  include = "time_after", 
-  label = list(time_after ~ "Time passed since intervention")
-  )
-tbl_calgary_only <- tbl_regression(
-  calgary_only_opioid_final, 
-  include = "time_after", 
-  label = list(time_after ~ "Time passed since intervention")
-  )
-
-tbl_merge(
-  tbls = list(tbl_calgary_opioid, tbl_calgary_only, tbl_noSouth_calgary, tbl_edmonton_opioid, tbl_noSouth_edmonton, tbl_edmonton_only),
- tab_spanner = c("**Calgary Opioid (Controlled model)**", "**Calgary Opioid Excluding South**", "**Calgary Opioid (Single-zone, no controls)**", "**Edmonton Opioid (Controlled model)**", "**Edmonton Opioid Excluding South**", "**Edmonton Opioid (Single-zone, no controls)**")
-)  
-  
-```
-
 Two sensitivity analyses tested whether the primary findings were robust to changes in comparison-group structure. The first excluded South from the comparison zones, given that Lethbridge (South zone) opened its own SCS within weeks of Edmonton's, making it an imperfect control. This is further supported by South zone's parallel pre-trends interaction term showing the largest p-value among the three comparison zones in both models (Calgary: p = 0.076; Edmonton: p = 0.137), though this did not reach conventional statistical significance. The second removed comparison zones entirely, fitting each treated zone's model as a single-group interrupted time series.
 
 Under South-exclusion, Edmonton's trend-change estimate remained significant and slightly strengthened (β = 0.27, p < 0.001), supporting the robustness of the primary finding. Calgary's estimate, however, flipped from non-significant to significant in the protective direction (β = -0.11, p = 0.015). Given the number of specifications tested across this analysis, this result should be interpreted cautiously, as it carries an elevated risk of a false-positive finding arising from multiple comparisons rather than a genuine effect.

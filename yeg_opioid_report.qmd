@@ -406,22 +406,36 @@ Taken together, these results do not support a simple narrative in either direct
 
 ```{r}
 #| label: fig-3
-#| fig-cap: "QQ plots of primary models"
+#| fig-cap: "QQ plots of Edmonton zone's primary models"
 
 qqnorm(residuals(calgary_opioid_final, type = "normalized"))
 qqline(residuals(calgary_opioid_final, type = "normalized"))
 
-qqnorm(residuals(edmonton_opioid_final, type = "normalized"))
-qqline(residuals(edmonton_opioid_final, type = "normalized"))
-
 ```
-## A.2 Residual Autocorrelation (ACF Plots) 
 
 ```{r}
 #| label: fig-4
-#| fig-cap: "ACF plots of primary models"
+#| fig-cap: "QQ plots of Calgary zone's primary model"
+
+qqnorm(residuals(calgary_opioid_final, type = "normalized"))
+qqline(residuals(calgary_opioid_final, type = "normalized"))
+
+```
+
+## A.2 Residual Autocorrelation (ACF Plots) 
+
+```{r}
+#| label: fig-5
+#| fig-cap: "ACF plots of Calgary zone's primary models"
 
 plot(ACF(calgary_opioid_final, resType = "normalized"), alpha = 0.05)
+
+```
+
+```{r}
+#| label: fig-6
+#| fig-cap: "ACF plots of Edmonton zone's primary models"
+
 plot(ACF(edmonton_opioid_final, resType = "normalized"), alpha = 0.05)
 
 ```

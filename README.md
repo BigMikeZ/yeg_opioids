@@ -1,7 +1,7 @@
 # Did Supervised Consumption Sites Change Opioid Death Rates in Alberta?
 **Author:** Mike Zhang — [GitHub](https://github.com/BigMikeZ)
 
-[View Full Report Here](https://bigmikez.github.io/yeg_opioid/)
+[View Full Report Here](https://bigmikez.github.io/yeg_opioids/)
 
 ## Research Question
 Did the opening of supervised consumption sites in Edmonton and Calgary change opioid and all-substance drug poisoning death rates in those cities, relative to comparison zones elsewhere in Alberta?
